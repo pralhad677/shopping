@@ -33,13 +33,13 @@ mongoose.connect('mongodb://localhost:27017/graphqlDb',{
     // newURLParser:true
     useNewUrlParser: true,
     useUnifiedTopology: true
-     
+      
 }).then(() => { 
-    console.log('connected to mongodb')
+    console.log('connected to mongodb') 
     app.listen(process.env.PORT,()=>{
         console.log('app is listening on port 3005/graphql')
     }) 
-}).catch(console.log)
+}).catch(console.log) 
 
 process.on('unhandledRejection', (err:Error) => {
     

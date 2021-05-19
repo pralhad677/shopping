@@ -1,0 +1,88 @@
+import { AppBar, Toolbar,Typography,makeStyles,Button,IconButton,  } from "@material-ui/core";
+import React from "react";
+import {headersData} from './set'
+
+import {Link as RouterLink} from 'react-router-dom'
+
+interface Props {
+
+}
+
+const useStyles = makeStyles(() => ({
+   header: {
+    // backgroundColor: "black",
+    // color:'green',
+    // paddingRight: "79px",
+    // paddingLeft: "118px",
+    padding: "0px",
+   },
+   menuButton: {
+      fontFamily: "Open Sans, sans-serif",
+      fontWeight: 700,
+      size: "18px",
+      marginLeft: "38px",
+      color:'blue'
+   },
+   toolbar: {
+    display: "flex",
+    justifyContent: "space-between",
+
+    
+  },
+}));
+
+ let Header:React.FC<Props> =(Props)=> {
+  let {menuButton,toolbar,header} = useStyles()
+    const displayDesktop = () => {
+      return <Toolbar className={toolbar}>
+      <div style={{marginLeft:"0px"}} >
+      
+      {getMenuButtons()}
+      </div>
+      
+      {/* {getMenuButtons()} */}
+    
+    
+    </Toolbar>;
+  };
+
+ 
+  const getMenuButtons = () => {
+    return headersData.map(({ label, href }) => {
+      return (
+        <Button
+          {...{
+            key: label,
+            color: "inherit",
+            to: href,
+            component: RouterLink,
+            className: menuButton
+          }}
+        >
+          {label}
+        </Button>
+      );
+    });
+  };
+  
+  
+  return (
+    <div>
+      {/* <AppBar  position="static" >{displayDesktop()}</AppBar>
+       */}
+       <AppBar position="static">
+  <Toolbar>
+    <IconButton edge="start" className={menuButton} color="inherit" aria-label="menu">
+      {/* <MenuIcon /> */}
+    </IconButton>
+    <Typography variant="h6" className={header}>
+      {displayDesktop()}
+    </Typography>
+    <Button color="inherit">Login</Button>
+  </Toolbar>
+</AppBar>
+    </div> 
+  );
+}
+
+export default Header

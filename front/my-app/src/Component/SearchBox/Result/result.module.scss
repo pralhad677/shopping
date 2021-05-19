@@ -1,0 +1,13 @@
+$color:rgba(123,234,123,.6);
+
+.search {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.childDiv {
+    background-color: $color;
+    height: 35vh;
+    width: 40vh;
+}

@@ -40,6 +40,10 @@ export const resolvers: IResolvers = {
                         name,
                         id:Math.ceil(Math.random()*106891230903123)
                     }
+                    let itemFound = lists.find(item => item.name === name);
+                    if (itemFound || name==="") {
+                        return lists
+                    }
                     lists.push(obj)
                     return lists
                 }
