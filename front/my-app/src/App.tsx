@@ -6,6 +6,7 @@ import { ErrorBoundary } from 'react-error-boundary'
 import './App.scss'
 import Header from './Component2/Header'
 import Footer from './Component2/Footer'
+import Image from './Component2/Image/Index'
 
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 
@@ -144,7 +145,7 @@ let App: React.FC<Props> = (props) => {
           <Route path="/Beauty" component={() => <h1>Beauty</h1>}></Route>
           <Route path="/HomeAndLiving" component={()=><h1>Home and Living</h1>}></Route>
         </Switch>
-        
+        <Image />
         <Footer />
         </ThemeProvider>
       

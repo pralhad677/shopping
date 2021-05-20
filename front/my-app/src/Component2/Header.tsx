@@ -11,7 +11,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import { Link } from 'react-router-dom'
 
 import SearchBar from "material-ui-search-bar";
-import Avatar from '@material-ui/core/Avatar';
+import Avatar from '@material-ui/core/Avatar'; 
 
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -143,11 +143,11 @@ const style = makeStyles((theme:Theme) => ({
   },
   searchIcon: {
     padding: theme.spacing(0, 2),
-    
+    // marginRight:"55px",
     height: '80%',
-    width:"500px", 
+    width:"380px", 
     position: 'absolute',
-    left:"150px",
+    left:"100px",
     // pointerEvents: 'none',
     // display: 'flex',
     // alignItems: 'center',
