@@ -16,6 +16,7 @@ import Avatar from '@material-ui/core/Avatar';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import { boolean } from 'yargs';
+import { elementAt } from 'rxjs/operators';
 
 
 
@@ -157,6 +158,11 @@ const style = makeStyles((theme:Theme) => ({
     // '&:hover': {
     //   backgroundColor:'white'
     // }
+  },
+  elevation:{
+    position:"fixed",
+    top: "0px",
+    marginBottom:"20px"
   }
     
 })) 
@@ -171,7 +177,7 @@ function a11yProps(index: any) {
 
 
 let Header: React.FC<Props> = (): ReactElement => {
-  let { tabs, tab, button, logoContainer, searchIcon, avatar } = style()
+  let { tabs, tab, button, logoContainer, searchIcon, avatar,elevation } = style()
   const { handleClose, handleClick, anchorEl,
     // enterMenu,
     // leaveMenu,
@@ -214,9 +220,9 @@ let Header: React.FC<Props> = (): ReactElement => {
   
   // const open = mouseOverButton|| mouseOverMenu
   return (
-    <ElevationScroll>
+    <ElevationScroll  >   
       
-    <AppBar position="static" color="secondary" > 
+    <AppBar position="static" color="secondary" className={elevation} >  
       
         <Toolbar disableGutters>
           <Button component={Link} to="/" className={logoContainer} onClick={()=>setValue(0)} disableRipple>

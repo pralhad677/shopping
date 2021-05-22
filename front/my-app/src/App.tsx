@@ -9,6 +9,9 @@ import Footer from './Component2/Footer'
 import Image from './Component2/Image/Index'
 
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
+import CovidHelp from './Component2/CovidHelp/Index'
+import DealsOfTheDay from './Component2/DealsOfTheDay/Index'
+import NepaliDress from './Component2/NepaliWear/Index'
 
 
 import { Switch, Route } from 'react-router-dom'
@@ -146,6 +149,18 @@ let App: React.FC<Props> = (props) => {
           <Route path="/HomeAndLiving" component={()=><h1>Home and Living</h1>}></Route>
         </Switch>
         <Image />
+        <hr
+        style={{
+            color: 'black', 
+            backgroundColor: 'grey',
+            // width:calc(100%-20px), 
+            width: "calc(100vw - 80px)",
+            height: "2",
+        }}
+    />
+        <CovidHelp />
+        <DealsOfTheDay />
+        <NepaliDress />
         <Footer />
         </ThemeProvider>
       

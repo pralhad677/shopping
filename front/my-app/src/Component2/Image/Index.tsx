@@ -122,7 +122,8 @@ function ImageListShow() {
           setImageKey(Number((e.target as HTMLButtonElement).id))
         }  
            
-        }> <div className={`${slideDot} ${imageKey===3?`${active}`:''}`} id="3"></div></Button>
+        }> <div className={`${slideDot} ${imageKey === 3 ? `${active}` : ''}`} id="3"></div>
+        </Button>
           {/* <Button><div className={slideDot} id="4"></div></Button> */}
         </div>
     </div>
