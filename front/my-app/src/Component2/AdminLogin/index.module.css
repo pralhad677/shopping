@@ -1,0 +1,59 @@
+input {
+    margin-top: 30px;
+    height:30px;
+    width:30px;
+    border-radius:10px;
+    width:200px;
+    background-color: rgb(241,241,239);
+}
+input[type="submit"]{
+    width:100px;
+    
+    margin-top: 10px;
+    border-radius:5px;
+    color:white;
+    background-color:rgb(255,85,0);
+}
+
+input:focus {
+    outline: none;
+}  
+
+form {
+    background-color: white;
+    height:480px;
+    width:400px;
+    position:relative;
+    bottom:40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items:center;
+    margin:60px 50px
+} 
+p{
+    color:red
+}
+
+label {
+    position:relative;
+    top:20px
+}
+ul> li {
+    color:red
+}
+a:hover{
+    color:red
+}
+
+/* div[id="1"]{
+    margin:auto; */
+    /* background-image: url("https://image.shutterstock.com/shutterstock/photos/1107333698/display_1500/stock-photo-word-admin-written-in-wooden-blocks-in-red-notebook-on-white-wooden-table-wooden-abc-1107333698.jpg");
+    background-position: center;
+    background-size: cover; */
+/*     
+  background-clip: content-box;
+  background-origin:content-box; */
+    /* height:400px;
+    width:400px */
+/* } */

@@ -21,7 +21,13 @@
     "noImplicitAny": true,
     "noImplicitThis": true,
     "strictNullChecks": true,
-    "strict": true
+    "strict": true,
+
+    "typeRoots": [
+     
+        "../my-app/node_modules/@types",
+        "../my-app/@types/allTypes.d.ts"
+      ],
   },
   "include": [
     "src"

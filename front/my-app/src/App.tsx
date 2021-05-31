@@ -1,5 +1,5 @@
-import React from 'react'
-import { useQuery, gql, useMutation } from '@apollo/client';
+import React,{Dispatch} from 'react'
+import { useQuery, gql, useMutation } from '@apollo/client'; 
 // import ErrorBoundary from './Component/ErrorBoundary/ErrorBoundary';
 import { ErrorBoundary } from 'react-error-boundary'
 // import SearchBox from './Component/SearchBox/index'
@@ -12,50 +12,37 @@ import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import CovidHelp from './Component2/CovidHelp/Index'
 import DealsOfTheDay from './Component2/DealsOfTheDay/Index'
 import NepaliDress from './Component2/NepaliWear/Index'
+import LineBreak from './Component2/LineBreak/Index'
 
 
-import { Switch, Route } from 'react-router-dom'
+import { Switch, Route, Link } from 'react-router-dom';
+
+import Men from './Component2/Men/Index'
+import Profile from './Component2/Profile/Index'
+import FileUpload from './Component2/FIleupload/Index'
+import AdminLogin from './Component2/AdminLogin/Index'
+import LoginUser from './Component2/LoginUser/Index'
+import { Redux,StateType,Action } from './Component2/Redux/Index';
+
  
 
 interface Props {
   
 }
 
-let listOfName = [
-  "rupak","dipak","nisha","madan","rabin","pandey","a"
-]
+
+
+const Name = gql`
+query name{
+  name
+}
+`
 
 
 
-// const mutation = `
-// mutation AddUser($name:String!){
-//   addUser(name:$name){
-//     name,
-//     id
-//   }
-// }`
 
 
 
-const ADD_TODO = gql`
-  mutation AddUser($name: String!) {
-    addUser(name: $name) {
-      name
-      id
-     
-    }
-  }
-`;
-
-
-// const mutation1 = gql`
-//   mutation AddUser($name:String!){
-//   addUser(name:$name){
-//     name,
-//     id
-  // }
-
-// `
 
 const innerTheme = createMuiTheme({
   palette: {
@@ -66,7 +53,7 @@ const innerTheme = createMuiTheme({
     // },
     
     primary: {
-      main:"#FFD700"
+      main:"rgb(254,179,144)"
     },
     secondary: {
       main: "#228B22",
@@ -85,26 +72,41 @@ const innerTheme = createMuiTheme({
     }
   }
 });
-  
+interface InitContextProps {
+  state: StateType;
+  dispatch: Dispatch<Action>;
+}
+
+export const Context = React.createContext(({} as InitContextProps))
 
 let App: React.FC<Props> = (props) => {
-  const [addUser] = useMutation(ADD_TODO);
-  const [listOfUser, setListOfuser] = React.useState<{name:string,id:number}[]>([])
+  // const [addUser] = useMutation(ADD_TODO);
+  const  {
+    state,
+    dispatch
+  } = Redux()
+  const [listOfUser, setListOfuser] = React.useState<{ name: string, id: number }[]>([])
+  const {data}= useQuery(Name)
+  function handleClick() {
+    console.log(data)
+  }
+  
   
   let data1 = React.useCallback(() => {
+    
     let res:any;
     let myfn = async () => {
       try {
  
-        for (let i of listOfName) {
-          console.log(i)
-           res = await addUser({ variables: { name: i } })
-          setListOfuser(res.data.addUser.flat());
+        // for (let i of listOfName) {
+        //   console.log(i)
+        //    res = await addUser({ variables: { name: i } })
+        //   setListOfuser(res.data.addUser.flat());
         
-        }
-        if (res) {
-          console.log(res)
-        }
+        // }
+        // if (res) {
+        //   console.log(res)
+        // }
        
       }
       catch (err) {
@@ -115,7 +117,8 @@ let App: React.FC<Props> = (props) => {
     
   
       myfn()
-  },[addUser])
+  // },[addUser])
+  },[])
   
   React.useEffect(() => {
     // 
@@ -127,43 +130,102 @@ let App: React.FC<Props> = (props) => {
     FallbackComponent={ErrorFallback}
     onReset={() => {
       // reset the state of your app so the error doesn't happen again
-    }}
-    >
-      {/* <h1>{props.name}</h1> */}
-      {/* <SearchBox list={ listOfUser}/> */}
+    }} 
+    > 
+      <Context.Provider value={{ state,dispatch }}>
       <ThemeProvider theme={innerTheme}>
-      <Header />
+      
       {/* {
         [...new Array(1000)].map(()=>'lorem epsum').join('\n')
         } */}
         
         
         <Switch>
-          <Route exact path="/"  component={()=><h1>Home Page</h1>}>
-          </Route>
-          <Route  path="/Men"  component={()=><h1>Men</h1>}>
-          </Route>
-          <Route  path="/Women" component={()=><h1>Women</h1>}></Route>
-          <Route path="/Kids" component={() => <h1>Kids</h1>}></Route>
-          <Route path="/Beauty" component={() => <h1>Beauty</h1>}></Route>
-          <Route path="/HomeAndLiving" component={()=><h1>Home and Living</h1>}></Route>
-        </Switch>
-        <Image />
-        <hr
-        style={{
-            color: 'black', 
-            backgroundColor: 'grey',
-            // width:calc(100%-20px), 
-            width: "calc(100vw - 80px)",
-            height: "2",
-        }}
-    />
-        <CovidHelp />
-        <DealsOfTheDay />
-        <NepaliDress />
-        <Footer />
-        </ThemeProvider>
       
+          <Route exact path="/" component={() =>
+            <div>
+                <Header />
+              <h1>home</h1>
+              
+              <Image />
+              <LineBreak />
+              <CovidHelp />
+              <DealsOfTheDay />
+              
+            <NepaliDress />
+            <Footer />
+            </div>
+          }>
+          </Route>
+          <Route path="/shop/Men/:id?" component={() =>
+            <div>
+                <Header />
+              <h1>Men</h1>
+              <Men />
+              <Footer />
+          </div>}>
+          </Route>
+          <Route path="/shop/Women" component={() => <div>
+          
+            <Header />
+            Women
+            <Footer />
+             
+            </div>}></Route>
+          <Route path="/shop/Kids" component={() => <div>
+            <Header />
+            <h1>Kids</h1>
+            <Footer />
+          </div>}></Route>
+          <Route path="/shop/Beauty" component={() => <div>
+            <Header />
+            <h1>Beauty</h1>
+            <Footer />
+          </div>}></Route>
+
+          <Route path="/shop/HomeAndLiving" component={() => <div>
+            <Header />
+            <h1>HomeAndLiving</h1>
+            <Footer />
+          </div>}></Route>
+
+          <Route exact path="/profile" >
+           
+          <Header />
+            <Profile />
+            <FileUpload />
+            <Footer />
+          </Route>
+          <Route path="/adminLogin">
+              <AdminLogin />
+          </Route>
+          <Route path="/adminPanel/:id">
+
+          </Route>
+          <Route path="/userLogin">
+              <LoginUser />
+          </Route>
+          <Route path="/user/:id">
+            <div>
+              <h1>successfull login</h1>
+              <button onClick={handleClick}>me</button>
+              </div>
+          </Route>
+
+          <Route component={() => <div>
+            <h1>Not Found</h1>
+            <Link to="/">
+              Go Home
+             </Link> 
+          </div>} />
+         
+        </Switch>
+        
+      
+       
+        
+        </ThemeProvider>
+        </Context.Provider>
     </ErrorBoundary>
   )
 }
@@ -179,7 +241,9 @@ export default App
 //   )
 // }
 
-function ErrorFallback({error, resetErrorBoundary}:{error:any,resetErrorBoundary:any}) {
+
+
+ function ErrorFallback({error, resetErrorBoundary}:{error:any,resetErrorBoundary:any}) {
   return (
     <div role="alert">
       <p>Something went wrong:</p>
@@ -187,4 +251,4 @@ function ErrorFallback({error, resetErrorBoundary}:{error:any,resetErrorBoundary
       <button onClick={resetErrorBoundary}>Try again</button>
     </div>
   ) 
-} 
+}

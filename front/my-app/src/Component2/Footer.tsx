@@ -52,6 +52,7 @@ let Footer: React.FC<Props> = (props) => {
   function handleClick() {
     history.push("/")
   }
+  // console.log(window.location.origin)
   return (
     <div>
       <AppBar position="static"  className={footer}> 
@@ -90,7 +91,11 @@ let Footer: React.FC<Props> = (props) => {
                 <div style={{display:"flex",}}>
                   {
                     mediaImage.map(image => {
-                      return <img key={image.id} alt="pic" src={ image?.path.split('/').slice(3).join('/')} style={{height:"40px",width:"40px",marginLeft:"5px",borderRadius:"50%"}} />
+                      return <img
+                        key={image.id}
+                        alt="pic"
+                        src={window.location.pathname === '/' ? image?.path.split('/').slice(3).join('/'):window.location.origin + '/'+image?.path.split('/').slice(3).join('/')}
+                        style={{ height: "40px", width: "40px", marginLeft: "5px", borderRadius: "50%" }} />
                     })
                 }
                 </div>

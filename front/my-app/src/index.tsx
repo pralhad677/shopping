@@ -3,22 +3,59 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { ApolloClient, InMemoryCache } from '@apollo/client';
+import { ApolloClient, InMemoryCache,ApolloLink,createHttpLink } from '@apollo/client';
 import { ApolloProvider } from '@apollo/client/react';
+import { createUploadLink } from 'apollo-upload-client'
+// import { onError } from "@apollo/client/link/error";
+import { onError } from "apollo-link-error";
 
-// import { BrowserRouter as Router } from "react-router-dom";
-import { BrowserRouter as Router} from 'react-router-dom' 
+import { BrowserRouter as Router,useHistory } from 'react-router-dom'
 
-const client = new ApolloClient({
-  uri: 'http://localhost:3005/graphql',
-  cache: new InMemoryCache()
-});
+
  
+const link = onError(({ graphQLErrors, networkError }) => {
+  if (graphQLErrors)
+    graphQLErrors.forEach(({ message, locations, path }) => {
+     
+      console.log(
+        `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
+      )
+      if (message.includes('not authenticated')) {
+        useHistory().replace('/userLogin')
+      }
+    }
+    );
+  if (networkError) console.log(`[Network error]: ${networkError}`);
+});
+const uploadLink =createUploadLink({
+      
+  uri: 'http://localhost:3012/graphql',
+  credentials: "include"
+})
+const httpLink = createHttpLink({
+  uri: 'http://localhost:3012/graphql',
+  credentials: "include"
+})
+ 
+const client = new ApolloClient({
+  link:  ApolloLink.from([ (link as unknown)  as ApolloLink,httpLink,uploadLink ]),
+  cache: new InMemoryCache()
+}); 
+  
+// const client = new ApolloClient({
+//   link: createUploadLink({
+      
+//     uri: 'http://localhost:3010/graphql',
+//     credentials: 'same-origin'
+//   }),
+//   cache: new InMemoryCache()
+// }); 
+  
 ReactDOM.render(
-  <React.StrictMode>
-  <Router>
+  <React.StrictMode> 
+  <Router >
       <ApolloProvider client={client}>
-          <App />
+          <App  />
       </ApolloProvider>
   </Router>
   

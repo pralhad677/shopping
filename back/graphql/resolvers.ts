@@ -1,6 +1,18 @@
-import { IResolvers } from 'apollo-server-express'
-import {User} from '../Model/User'
+import { IResolvers,UserInputError } from 'apollo-server-express'
+import { User,IUser } from '../Model/User'
+import { Admin, IAdmin } from '../Model/Admin'
+import jwt from 'jsonwebtoken'
+import {getTokens} from './token'
+// const jwt = require('jsonwebtoken');
+// import { User, } from '../Model/User'
+
+import path from 'path'
+import fs  from 'fs'
+
+// import {upload} from '../FileUpload/Index'
+
 import _ from 'lodash'
+import bcrypt from 'bcryptjs';
  const lists = [
     {
         name:'jacob',
@@ -12,10 +24,21 @@ import _ from 'lodash'
     }
 ]
 
+// interface JsonType {
+//     status: number,
+//     message:string
+// }
+// type X = IAdmin & JsonType
+
+//  type JsonResponse = Pick<X,"_id"|"email"|"password"|"status"|"message">
 
 export const resolvers: IResolvers = {
     Query: {
-        name(parent, args, context, info) {
+        name(parent, args, { req }, info) {
+            console.log('req.userId',req.userId)
+            if (!req.userId) {
+                return 'login to access '
+            }
             return 'my name is jacob'
         },
         users() {
@@ -28,27 +51,107 @@ export const resolvers: IResolvers = {
            
             let data1 = _.pick(data, ["name", "_id"])
             return {
-                name: data1.name,
+                email: data1.email,
                 id: data1._id
             }
         },
     },
-            Mutation: {
-                addUser(parent, { name }) {
-                    // throw new Error('error occurs')
-                    let obj = {
-                        name,
-                        id:Math.ceil(Math.random()*106891230903123)
-                    }
-                    let itemFound = lists.find(item => item.name === name);
-                    if (itemFound || name==="") {
-                        return lists
-                    }
-                    lists.push(obj)
-                    return lists
-                }
-            }
+    Mutation: {
 
+        //signup
+        async addUser(parent, { email, password, confirmPassword }) {
+            console.log('oo')
+            let data = new User({
+                email,
+                password,
+                confirmPassword,
+                count:0
+        })
+            console.log(data)
+            let data1 = await data.save()
+            console.log(data1)
+
+            return data1
+
+            
+        },
+
+        uploadFile: async (parent, {file}) => {
+            const { createReadStream,filename, mimetype, encoding } = await file
+            console.log('asd')
+            const stream = await createReadStream()
+            console.log(file)
+            
+            let pathname = path.join(__dirname, `/public/images/${filename}`)
+           
+             let pathname1 =a(pathname)
+                console.log( pathname1)
+            await new Promise((resolve, reject) => {
+                const writeStream = fs.createWriteStream(pathname1);
+                stream
+                    .pipe(writeStream)
+                    .on('finish', resolve)
+                    .on('error', reject);
+            });
+            
+            console.log('d')
+            return { 
+                url:`http://localhost:3012/images/${filename}` 
+            }
+        },
+        // :Promise<JsonResponse >
+        addAdmin: async (parent, {email,password}, context, info) => {
+           console.log(email,password)
+            let adminData = new Admin({
+                        email,
+                        password
+            })
+            let data = await adminData.save()
+            console.log(data) 
+                    return data
+        // return {
+        //     ...data,
+        //     status: 201,
+        //     message:"successfully created resource"
+        // }
+        },
+        loginUser: async (parent, {email,password}, {res}, info)=>{
+            let user:IUser|null = await User.findOne({ email })
+            if (!user) {
+                // throw new Error("NO User found With given id")
+                
+                    throw new UserInputError('NO User found With given id');
+            }
+            const valid = await bcrypt.compare(password, user.password.toString())
+            console.log("valid",valid)
+            if(!valid){
+                 
+                throw new Error("InValid Password")
+            }
+            console.log('hey')
+            const { accessToken,
+                refreshToken} =getTokens(user)
+            res.cookie("refresh-token",refreshToken,{expires: new Date(Date.now() + 1000*60*60*24*7),httpOnly:true}) //7 days
+            res.cookie("access-token", accessToken, {expires: new Date(Date.now() + 1*60*1000),httpOnly:true}) //15 min
+            
+            console.log('hey1') 
+            return user
+        }
+    }
         }
     
+interface A{
+    (x:string):string
+} 
 
+let a:A=(data:string)=> {
+    let x = data.split('\\') //regex pattern manne vako le double slah rakheko
+    console.log('x',x)
+   x.splice(5, 1)
+    console.log('x',x)
+    return x.join('\\')
+        }
+
+
+
+        

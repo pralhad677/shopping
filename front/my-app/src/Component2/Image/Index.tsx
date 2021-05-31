@@ -9,6 +9,8 @@ import { getSingleImage } from './list'
 
 
 
+
+
 interface Image {
   id:string,
   path:string
@@ -96,7 +98,7 @@ function ImageListShow() {
   },[setImageKey,imageKey])
   return (
     <div className={div}> 
-      
+      <h1>this is my custom slider if u want to make built in slider then use react-slick autoplay </h1>
       <img src={path} alt="pic" className={Image} />
       <div className={parentDiv}>
         <Button onClick={(e:React.MouseEvent<HTMLButtonElement>) => {

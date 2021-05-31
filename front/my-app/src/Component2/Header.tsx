@@ -8,15 +8,18 @@ import useScrollTrigger from '@material-ui/core/useScrollTrigger';
  
 import ShoppingImage from './SVG/shop.svg'
 import { makeStyles } from '@material-ui/core/styles'
-import { Link } from 'react-router-dom'
+import { Link,useHistory } from 'react-router-dom'
 
 import SearchBar from "material-ui-search-bar";
 import Avatar from '@material-ui/core/Avatar'; 
 
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
-import { boolean } from 'yargs';
-import { elementAt } from 'rxjs/operators';
+
+// import Popover from '@material-ui/core/Popover';
+import Card from '@material-ui/core/Card';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
 
 
 
@@ -41,7 +44,7 @@ function ElevationScroll(props: ElevatedProps) {
     disableHysteresis: true, //delay 
     threshold: 0, //default 100 0 rakhda chai user le scroll grna paxena scroll satrt hunxa
     // target: window ? window() : undefined,
-  });
+  }); 
 
   return React.cloneElement(children, {
     elevation: trigger ? 4 : 0,
@@ -51,17 +54,24 @@ function ElevationScroll(props: ElevatedProps) {
 
 function SimpleMenu() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [mouseOverButton,setmouseOverButton]=React.useState<boolean>(false)
-  const [mouseOverMenu, setmouseOverMenu] = React.useState<boolean>(false)
-  const [open,setOpen] =React.useState<boolean>(false)
+  // const [mouseOverButton,setmouseOverButton]=React.useState<boolean>(false)
+  // const [mouseOverMenu, setmouseOverMenu] = React.useState<boolean>(false)
+  // const [open,setOpen] =React.useState<boolean>(false)
+  
+  const [value, setValue] = React.useState<number>(0);
+
+  let history=useHistory()
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
     // setOpen(true)
   };
 
-  const handleClose = () => {
+  const handleClose = () => { 
     setAnchorEl(null);
+    setValue(-1);
+    history.push('/profile')
+
     // setmouseOverButton(false)
     // setmouseOverMenu(false)
     
@@ -104,6 +114,7 @@ function SimpleMenu() {
     handleClick,
     anchorEl,
     setAnchorEl,
+    value, setValue
     // enterMenu,
     // leaveMenu,
     // leaveButton,
@@ -119,7 +130,13 @@ interface Props{
 
 const style = makeStyles((theme:Theme) => ({
   tabs: {
-      marginLeft:"auto"
+    marginLeft: "auto",
+    
+    // '&:hover': {
+      
+    //     display:"visible"
+    //   }  
+   
   },
   tab: {
     fontFamily: 'Rubik', 
@@ -159,11 +176,16 @@ const style = makeStyles((theme:Theme) => ({
     //   backgroundColor:'white'
     // }
   },
-  elevation:{
-    position:"fixed",
-    top: "0px",
-    marginBottom:"20px"
-  }
+  elevation: {
+    color: "white",
+  textAlign: "center",
+  position: "sticky",
+  top: "0px"
+   
+  },
+   popover: {
+      pointerEvents: 'none',
+    },
     
 })) 
 function a11yProps(index: any) {
@@ -179,16 +201,16 @@ function a11yProps(index: any) {
 let Header: React.FC<Props> = (): ReactElement => {
   let { tabs, tab, button, logoContainer, searchIcon, avatar,elevation } = style()
   const { handleClose, handleClick, anchorEl,
+    value, setValue
     // enterMenu,
     // leaveMenu,
     // leaveButton,
     // enterButton,
     // mouseOverButton,
     // mouseOverMenu
-  } = SimpleMenu()
+  } = SimpleMenu() 
     
   
-  const [value, setValue] = React.useState<number>(0);
   const [searchVal, setSearchVal] = React.useState<string>('')
 
   
@@ -199,32 +221,32 @@ let Header: React.FC<Props> = (): ReactElement => {
     setValue(newValue);
   };
   React.useEffect(() => {
-    if (window.location.pathname === '/Home' && value !== 0) {
+    if (window.location.pathname === '/' && value !== 0) {
         setValue(0)
     }
-    else if (window.location.pathname === '/Men' && value !== 1) {
+    else if (window.location.pathname === '/shop/Men' && value !== 1) {
         setValue(1)
     }
-    else if (window.location.pathname === '/Women' && value !== 2) {
+    else if (window.location.pathname === '/shop/Women' && value !== 2) {
       setValue(2)
-    }
-    else if (window.location.pathname === '/Kids' && value !== 3) {
+    } 
+    else if (window.location.pathname === '/shop/Kids' && value !== 3) { 
       setValue(3)
-    }else if (window.location.pathname === '/Beauty' && value !== 4) {
+    }else if (window.location.pathname === '/shop/Beauty' && value !== 4) {
       setValue(4)
     }
-    else if (window.location.pathname === '/HomeAndLiving' && value !== 4) {
+    else if (window.location.pathname === '/shop/HomeAndLiving' && value !== 4) {
       setValue(5)
     }
-  }, [value])
-  
+  }, [value,setValue])
+   
   // const open = mouseOverButton|| mouseOverMenu
   return (
     <ElevationScroll  >   
       
     <AppBar position="static" color="secondary" className={elevation} >  
       
-        <Toolbar disableGutters>
+        <Toolbar disableGutters> 
           <Button component={Link} to="/" className={logoContainer} onClick={()=>setValue(0)} disableRipple>
           <img height="70" src={ShoppingImage} alt="shopping Image" />
           </Button>
@@ -239,18 +261,18 @@ let Header: React.FC<Props> = (): ReactElement => {
           />
         
             
-          <Tabs className={tabs} value={value} onChange={handleChange} aria-label="simple tabs example">
-            <Tab label="Home" className={tab} {...a11yProps(0)} component={Link} to="/"></Tab>
-            <Tab label="Men" className={tab} {...a11yProps(1)} component={Link} to="/Men"></Tab>
-            <Tab label="Women" className={tab} {...a11yProps(2)} component={Link} to="/Women"></Tab>
-            <Tab label="Kids" className={tab} {...a11yProps(3)} component={Link} to="/Kids"></Tab> 
-            <Tab label="Beauty" className={tab} {...a11yProps(4)} component={Link} to="/Beauty"></Tab>
-            <Tab label="Home & Living" className={tab} {...a11yProps(5)} component={Link} to="/HomeAndLiving"></Tab>
+          <Tabs className={tabs} value={value} onChange={handleChange} aria-label="simple tabs example" >
+            <Tab label="Home" className={tab} {...a11yProps(0)} component={Link} to="/" ></Tab>
+            <Tab label="Men" className={tab} {...a11yProps(1)} component={Link} to="/shop/Men"></Tab>
+            <Tab label="Women" className={tab} {...a11yProps(2)} component={Link} to="/shop/Women"></Tab>
+            <Tab label="Kids" className={tab} {...a11yProps(3)} component={Link} to="/shop/Kids"></Tab> 
+            <Tab label="Beauty" className={tab} {...a11yProps(4)} component={Link} to="/shop/Beauty"></Tab>
+            <Tab label="Home & Living" className={tab} {...a11yProps(5)} component={Link} to="/shop/HomeAndLiving"></Tab>
             
-              
-            <Button className={button}
+                
+            <Button className={button}  
              
-              onMouseEnter={handleClick} 
+              onClick={handleClick} 
             > <Avatar className={avatar} /></Button>
            
             <Menu 
@@ -271,8 +293,16 @@ let Header: React.FC<Props> = (): ReactElement => {
         <MenuItem onClick={handleClose}>Logout</MenuItem>
       </Menu>
               
-          </Tabs> 
-           
+          </Tabs>
+          {/* <Card style={{position:"fixed",left:"600px",top:"48px",display:"none"}} className={tabs}> */}
+            {/* <CardContent>
+              <h1>hey</h1>
+            </CardContent>
+            <CardActions>
+        <Button size="small">Learn More</Button>
+      </CardActions>
+          </Card> */}
+            
       </Toolbar> 
         
     </AppBar>
