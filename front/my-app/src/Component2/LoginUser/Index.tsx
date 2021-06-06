@@ -14,7 +14,15 @@ mutation loginUser($email:String!,$password:String!){
     _id
   }
 }
-`  
+
+`
+const Get_User = gql`
+mutation getUser($id:ID!){
+  getUser(id:$id){
+    email
+  }
+}
+`
 
 const loginSchema = Yup.object().shape({
   password: Yup.string()
@@ -29,6 +37,10 @@ const LoginForm = () => {
   const [loginUser] = useMutation(Login_User, {
     onCompleted:data=>console.log(data)
   })
+  const [getUser] = useMutation(Get_User, {
+    onCompleted:data=>console.log(data)
+  })
+  const [err,setError] =React.useState<boolean>(false)
  const handleSubmit = async (values:any, { setSubmitting }:{setSubmitting:any}) => {
     // setTimeout(() => {
     //   alert(JSON.stringify(values, null, 2));
@@ -45,6 +57,23 @@ const LoginForm = () => {
    }
     setSubmitting(false);
   };
+  let data = React.useCallback(async () => {
+    await getUser({ variables: { id: 1 } }).then(data, err => {
+      console.log(err)
+      // throw new Error(err)
+      setError(true)
+    })
+  },[getUser])
+  React.useEffect(() => {
+    let item = true
+    data()
+    return () => {
+      item=false
+    } 
+  }, [data])
+  if (err) {
+    return <h1>Error occurs</h1>
+  }
 
     return (
       <>

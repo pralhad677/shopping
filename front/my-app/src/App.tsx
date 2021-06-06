@@ -205,13 +205,21 @@ let App: React.FC<Props> = (props) => {
           <Route path="/userLogin">
               <LoginUser />
           </Route>
-          <Route path="/user/:id">
-            <div>
-              <h1>successfull login</h1>
+            <Route path="/user/:id" component={() => {
+              console.log('path', window.location.pathname.split('/').splice(2).join('/'))
+              localStorage.setItem('id', window.location.pathname.split('/').splice(2).join('/'));
+              return (
+                <div>
+                <h1>id:{`${window.location.pathname.split('/').splice(2).join('/')} `}</h1>
+                
+              <h1>successful login</h1>
               <button onClick={handleClick}>me</button>
               </div>
+              )
+            }}>
+           
           </Route>
-
+ 
           <Route component={() => <div>
             <h1>Not Found</h1>
             <Link to="/">

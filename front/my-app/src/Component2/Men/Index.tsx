@@ -1,31 +1,50 @@
 import React from 'react'
 import Slider from "react-slick";
+import './index.module.scss'
 
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import {Button} from '@material-ui/core'
-import {Context} from '../../App'
+import { Context } from '../../App'
+import {gql,useMutation} from '@apollo/client'
  
 interface Props{
-
+  
 }
+ 
+const Get_User = gql`
+mutation getUser($id:ID!){
+  getUser(id:$id){
+    _id
+  }
+}
+`
 
 let Index: React.FC<Props> = (props) => {
+  const [GetUser] = useMutation(Get_User, {
+    onCompleted: data => console.log(data)
+  }
+  )
   const {state,dispatch}= React.useContext(Context)
   const settings = {
     dots: true,
     infinite: true,
-    speed: 500,
+    speed: 500, 
     slidesToShow: 4, 
     slidesToScroll: 4
   };
   console.log('state', state)
-  let myfn = () => {
-    
-    dispatch({type:'success',data:{data:[{email:'bckjas',password:'nlkacs',auth:true}]}})
+  let myfn = async () => {
+    console.log('localStorage',typeof localStorage.getItem('id'))
+    const variables = {id:localStorage.getItem('id')}
+    let graphResponse = await GetUser({ variables })
+    console.log('graphResponse',graphResponse.data.getUser._id)
+    if ("60b1f9951d2b5807e81b8ff4" === graphResponse.data.getUser._id) {
+      dispatch({ type: 'success', data: { data: [{ email: 'bckjas', password: 'nlkacs', auth: true }] } })
+    }
   }
   return (
-   
+    
     <div>
       <div>
         <h1>Biggest Top Brands</h1>
@@ -71,11 +90,14 @@ let Index: React.FC<Props> = (props) => {
           </div>
         <div style={{margin:"25px"}}>
         <img alt="pic" src="https://assets.myntassets.com/w_163,c_limit,fl_progressive,dpr_2.0/assets/images/2020/7/8/2bac5e2d-337b-42c0-88c7-3d4e2dc464141594222908262-Shorts-_-Trousers.jpg" />
+        <h1>add to card</h1>
         </div>
-        <div style={{ margin: "25px" }}> 
+        <div style={{ margin: "25px" }} > 
           <Button onClick={myfn}>
-        <img alt="pic" src="https://assets.myntassets.com/w_163,c_limit,fl_progressive,dpr_2.0/assets/images/2020/7/8/720cf6ef-3be4-4825-8211-0125c942e3821594222907960-Jeans.jpg" />
+            <img alt="pic" src="https://assets.myntassets.com/w_163,c_limit,fl_progressive,dpr_2.0/assets/images/2020/7/8/720cf6ef-3be4-4825-8211-0125c942e3821594222907960-Jeans.jpg" />
+         
         </Button>
+           
         </div>
         
         {/* <img alt="pic" src="https://assets.myntassets.com/w_163,c_limit,fl_progressive,dpr_2.0/assets/images/2020/7/8/9ff1f34e-9242-47fd-9566-e7d7a5c240511594222908483-T-shirt.jpg" />

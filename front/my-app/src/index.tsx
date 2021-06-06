@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { ApolloClient, InMemoryCache,ApolloLink,createHttpLink } from '@apollo/client';
+import { ApolloClient, InMemoryCache,ApolloLink,createHttpLink,NormalizedCacheObject } from '@apollo/client';
 import { ApolloProvider } from '@apollo/client/react';
 import { createUploadLink } from 'apollo-upload-client'
 // import { onError } from "@apollo/client/link/error";
@@ -29,11 +29,11 @@ const link = onError(({ graphQLErrors, networkError }) => {
 });
 const uploadLink =createUploadLink({
       
-  uri: 'http://localhost:3012/graphql',
+  uri: 'http://localhost:3013/graphql',
   credentials: "include"
 })
 const httpLink = createHttpLink({
-  uri: 'http://localhost:3012/graphql',
+  uri: 'http://localhost:3013/graphql',
   credentials: "include"
 })
  

@@ -5,7 +5,9 @@ export const typeDefs = gql`
 type Query {
     name:String!,
     users:[User!]!,
-    user:User!
+    user:User!,
+    # pactising interface
+    item:[Item!]!
 },
 type User {
     email:String!,
@@ -36,6 +38,28 @@ type Mutation {
     uploadFile(file : Upload!) : File!,
     addAdmin(email:String!,password:String!):Admin!,
     loginUser(email:String!,password:String!):User!
+    getUser(id:ID!):User!
+}
+
+
+# //pactice kp ;lagi
+interface Item {
+  id: ID!
+
+}
+
+type Book implements Item {
+    id: ID!
+  name: String!
+  page:Int!
+  
+  
+}
+
+type Film implements Item {
+    id: ID!
+  genre: String! 
+ 
 }
 
 

@@ -1,4 +1,4 @@
-import { IResolvers,UserInputError } from 'apollo-server-express'
+import { IResolvers,UserInputError,ApolloError } from 'apollo-server-express'
 import { User,IUser } from '../Model/User'
 import { Admin, IAdmin } from '../Model/Admin'
 import jwt from 'jsonwebtoken'
@@ -13,6 +13,12 @@ import fs  from 'fs'
 
 import _ from 'lodash'
 import bcrypt from 'bcryptjs';
+
+let item=[ {
+    id: 1982364832791746192734669139747,
+  name: 'Jacob', 
+  genre: 'Nepali', 
+}]
  const lists = [
     {
         name:'jacob',
@@ -42,6 +48,9 @@ export const resolvers: IResolvers = {
             return 'my name is jacob'
         },
         users() {
+            // throw new UserInputError('Invalid argument value', {
+            //     argumentName: 'id'
+            //   });
             return lists
         },
         async user() {
@@ -55,6 +64,28 @@ export const resolvers: IResolvers = {
                 id: data1._id
             }
         },
+        item() {
+           
+         return [{
+            id: 1982364832791746192734669139747,
+          name: 'Jacob', 
+          page:200,
+          genre: 'Nepali', 
+        
+        }]
+        }
+    },
+    Item: {
+        __resolveType(obj:any, context:any, info:any){
+       if(obj.name){
+           return 'Book'
+       }
+       if(obj.genre){
+           return 'Film'
+       }
+       return 'Item'
+           
+          }
     },
     Mutation: {
 
@@ -96,7 +127,7 @@ export const resolvers: IResolvers = {
             
             console.log('d')
             return { 
-                url:`http://localhost:3012/images/${filename}` 
+                url:`http://localhost:3013/images/${filename}` 
             }
         },
         // :Promise<JsonResponse >
@@ -136,6 +167,16 @@ export const resolvers: IResolvers = {
             
             console.log('hey1') 
             return user
+        },
+        getUser: async (parent, { id }, {req}, info) => {
+            //this is custom error made by extending Apollo Error
+            if (!req.userId) {
+                
+            throw new NotAllowed('k khalko error ho kunni')
+            }
+            console.log('malai vanna aaudaina ')
+            return await User.findById(id)
+            
         }
     }
         }
@@ -154,4 +195,12 @@ let a:A=(data:string)=> {
 
 
 
+
+ class NotAllowed extends ApolloError {
+  constructor(message: string, properties?: Record<string, any>) {
+    super(message, 'Not Allowed TO Access', properties);
+
+    Object.defineProperty(this, 'name', { value: 'NotAllowed' });
+  }
+}
         

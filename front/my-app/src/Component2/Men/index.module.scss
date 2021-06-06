@@ -1,0 +1,15 @@
+div > img:hover {
+   transform:scale(1.2);
+   border-radius:10px;
+} 
+img~h1{
+    visibility:hidden;
+}
+
+div >img:hover {
+    h1{
+    visibility:visible;
+    opacity:1;
+    }
+}
+ 
