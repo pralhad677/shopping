@@ -10,6 +10,7 @@ export interface A extends Document {
 // https://zellwk.com/blog/mongoose-subdocuments/
 const ASchema = new Schema({
   name: { type: String, required: true },
+  //one to many relationship
   refer:[{ type: Schema.Types.ObjectId, ref: 'Employee' }]
   
 });
