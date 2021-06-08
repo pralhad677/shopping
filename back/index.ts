@@ -1,12 +1,13 @@
 import express from "express"
 const app=express()
-import {ApolloServer} from 'apollo-server-express'
+import {ApolloServer,PubSub} from 'apollo-server-express'
 import dotenv from 'dotenv'
 //using graphql --->we dont need body parser
 dotenv.config({path:'./dotenv.env'})
 // import {schema} from './Graphql/graphql'
 import {resolvers} from './graphql/resolvers'
-import  { typeDefs } from './graphql/typedefs';
+import { typeDefs } from './graphql/typedefs';
+
 import  { getTokens } from './graphql/token';
 // import mongoose from 'mongoose'
 import mongoose from 'mongoose'
@@ -17,7 +18,7 @@ import cookieParser from 'cookie-parser'
 import jwt from 'jsonwebtoken'
 import { User } from './Model/User'
 
-
+const pubsub = new PubSub()
 
 
 
@@ -33,7 +34,10 @@ app.use(express.static(__dirname + '/public'));
 const server = new ApolloServer({
    typeDefs,
     resolvers,
-    context: ({ req, res }: any) => (({ req, res })),
+    context: ({ req, res }: any) => (({ req, res, pubsub })),
+    subscriptions: {
+        path: '/subscriptions'
+      },
     
 //    uploads:true
 });

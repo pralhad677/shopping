@@ -39,6 +39,15 @@ type Mutation {
     addAdmin(email:String!,password:String!):Admin!,
     loginUser(email:String!,password:String!):User!
     getUser(id:ID!):User!
+    getEmployee(
+  name:String,
+  company:String,
+  twitter: String,
+  tiktok: String,
+  website: String,
+  addresses:[address!]!):Employee!
+
+  getA(name:String):A!
 }
 
 
@@ -60,6 +69,35 @@ type Film implements Item {
     id: ID!
   genre: String! 
  
+}
+type Address{
+  _id:ID!,
+  street:String,
+  city:String
+}
+input address {
+  
+  street:String,
+  city:String
+} 
+
+type Employee {
+  _id:ID!,
+  name:String,
+  company:String,
+  twitter: String,
+  tiktok: String,
+  website: String,
+  addresses:[Address!]!
+}
+type A{
+  name:String,
+  refer:[Employee!]!
+}
+
+type Subscription {
+  count:Int!
+  getEmployee:Employee!
 }
 
 

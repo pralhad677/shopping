@@ -1,8 +1,11 @@
-import { IResolvers,UserInputError,ApolloError } from 'apollo-server-express'
+import { IResolvers,UserInputError,ApolloError,PubSub } from 'apollo-server-express'
 import { User,IUser } from '../Model/User'
 import { Admin, IAdmin } from '../Model/Admin'
+import { Employee, } from '../Model/Employee'
+import { A as A1 } from '../Model/A'
 import jwt from 'jsonwebtoken'
-import {getTokens} from './token'
+import { getTokens } from './token'
+import { Subscription} from './subscription'
 // const jwt = require('jsonwebtoken');
 // import { User, } from '../Model/User'
 
@@ -13,6 +16,8 @@ import fs  from 'fs'
 
 import _ from 'lodash'
 import bcrypt from 'bcryptjs';
+
+let EMP ='emp'
 
 let item=[ {
     id: 1982364832791746192734669139747,
@@ -170,14 +175,57 @@ export const resolvers: IResolvers = {
         },
         getUser: async (parent, { id }, {req}, info) => {
             //this is custom error made by extending Apollo Error
-            if (!req.userId) {
+            // if (!req.userId) {
                 
-            throw new NotAllowed('k khalko error ho kunni')
-            }
+            // throw new NotAllowed('k khalko error ho kunni')
+            // }
             console.log('malai vanna aaudaina ')
             return await User.findById(id)
             
+        },
+        getEmployee: async (_, {name,company,twitter,tiktok,website,addresses }, { pubsub }) => {
+            let emp = new Employee({
+                name,
+                company,
+                twitter,
+                tiktok,
+                website,
+                addresses
+            })
+            console.log('emp',emp)
+            let data = await emp.save()
+            //subscription is based on webscoet so taht whenever i call this mutation method subscirption will b auto aupdate
+            //but subscription is not working in this case
+            // {
+            //     "error": "Could not connect to websocket endpoint ws://localhost:3013/subscriptions. Please check if the endpoint url is correct."
+            //   }
+            pubsub.publish('emp', {
+                data
+            })
+            return data
+        },
+        getA: async (_, {name}, { }) => {
+            let data = await A1.create({ name })
+            return data
         }
+    },
+    Subscription: {
+        count: {
+          subscribe(parent:any,args:any,{pubsub}:any,info:any) {
+            let count = 0
+            setInterval(() => {
+              ++count
+              pubsub.publish('count', {
+                count
+              })
+            },1000)
+            return pubsub.asyncIterator('count')
+        },
+        getEmployee: {
+            subscribe:(_, _1, { pubsub }: any) =>pubsub.asyncIterator(['emp'])
+        }
+        },
+    
     }
         }
     

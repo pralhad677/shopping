@@ -40,7 +40,7 @@ const LoginForm = () => {
   const [getUser] = useMutation(Get_User, {
     onCompleted:data=>console.log(data)
   })
-  const [err,setError] =React.useState<boolean>(false)
+  const [err,setError] =React.useState<string>('')
  const handleSubmit = async (values:any, { setSubmitting }:{setSubmitting:any}) => {
     // setTimeout(() => {
     //   alert(JSON.stringify(values, null, 2));
@@ -58,10 +58,10 @@ const LoginForm = () => {
     setSubmitting(false);
   };
   let data = React.useCallback(async () => {
-    await getUser({ variables: { id: 1 } }).then(data, err => {
+    await getUser({ variables: { id: "60b1f9951d2b5807e81b8ff4" } }).then(data, err => {
       console.log(err)
       // throw new Error(err)
-      setError(true)
+      setError(err.message)
     })
   },[getUser])
   React.useEffect(() => {
@@ -72,7 +72,7 @@ const LoginForm = () => {
     } 
   }, [data])
   if (err) {
-    return <h1>Error occurs</h1>
+    return <h1>{ err}</h1>
   }
 
     return (
