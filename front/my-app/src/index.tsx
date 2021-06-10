@@ -29,11 +29,11 @@ const link = onError(({ graphQLErrors, networkError }) => {
 });
 const uploadLink =createUploadLink({
       
-  uri: 'http://localhost:3013/graphql',
+  uri: 'http://localhost:3014/graphql',
   credentials: "include"
 })
 const httpLink = createHttpLink({
-  uri: 'http://localhost:3013/graphql',
+  uri: 'http://localhost:3014/graphql',
   credentials: "include"
 })
  

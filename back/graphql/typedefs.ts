@@ -48,6 +48,8 @@ type Mutation {
   addresses:[address!]!):Employee!
 
   getA(name:String):A!
+  aggregate:EmployeeAggregate!    
+
 }
 
 
@@ -98,6 +100,11 @@ type A{
 type Subscription {
   count:Int!
   getEmployee:Employee!
+}
+
+type EmployeeAggregate{
+  _id:String!,
+  count:Int!
 }
 
 

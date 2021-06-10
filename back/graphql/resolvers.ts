@@ -132,7 +132,7 @@ export const resolvers: IResolvers = {
             
             console.log('d')
             return { 
-                url:`http://localhost:3013/images/${filename}` 
+                url:`http://localhost:3014/images/${filename}` 
             }
         },
         // :Promise<JsonResponse >
@@ -197,7 +197,7 @@ export const resolvers: IResolvers = {
             //subscription is based on webscoet so taht whenever i call this mutation method subscirption will b auto aupdate
             //but subscription is not working in this case
             // {
-            //     "error": "Could not connect to websocket endpoint ws://localhost:3013/subscriptions. Please check if the endpoint url is correct."
+            //     "error": "Could not connect to websocket endpoint ws://localhost:3014/subscriptions. Please check if the endpoint url is correct."
             //   }
             pubsub.publish('emp', {
                 data
@@ -207,6 +207,21 @@ export const resolvers: IResolvers = {
         getA: async (_, {name}, { }) => {
             let data = await A1.create({ name })
             return data
+        },
+        aggregate: async (_1:any,_2:any,_3:any,_4:any) => {
+            let docs = await Employee.aggregate([
+                {
+                    $match: { "name":"jacob" } ,  
+                },
+                {
+                    $group: {
+                      _id: '$name',
+                      count: { $sum: 1 }
+                    }
+                  }
+            ])
+            console.log('docs', docs)
+            return docs[0]
         }
     },
     Subscription: {
